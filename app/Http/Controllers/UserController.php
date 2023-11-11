@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\User\StoreRequest;
 use App\Repositories\UserRepository;
-use App\Tools\ResponseOutput\ResponseController;
+use App\Tools\ResponseController;
 
-class SettingController extends ResponseController
+class UserController extends ResponseController
 {
     private UserRepository $userRepository;
     public function __construct(UserRepository $userRepository)
@@ -28,7 +28,18 @@ class SettingController extends ResponseController
             "mobile" => $request->mobile,
             "password" => bcrypt($request->password),
         ];
-        $result = $this->userRepository->create($params);
-        return $this->respondCreated($result);
+        $user = $this->userRepository->create($params);
+
+        if ($user->email) {
+            $user->notify(new NewUserNotification);
+        }
+    
+        if ($user->mobile) {
+            // Send SMS logic here
+            // Example: use a Twilio notification
+            // $user->notify(new TwilioSmsNotification('Hello! You have a new user.'));
+        }
+
+        return $this->respondCreated($user);
     }
 }
