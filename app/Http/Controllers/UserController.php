@@ -35,9 +35,7 @@ class UserController extends ResponseController
         }
     
         if ($user->mobile) {
-            // Send SMS logic here
-            // Example: use a Twilio notification
-            // $user->notify(new TwilioSmsNotification('Hello! You have a new user.'));
+
         }
 
         return $this->respondCreated($user);
